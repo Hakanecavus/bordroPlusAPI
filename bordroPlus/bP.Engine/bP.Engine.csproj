@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\bP.Core\bP.Core.csproj" />
+    <ProjectReference Include="..\bP.Data.Contract\bP.Data.Contract.csproj" />
+    <ProjectReference Include="..\bP.Data\bP.Data.csproj" />
+    <ProjectReference Include="..\bp.Engine.Contract\bp.Engine.Contract.csproj" />
+  </ItemGroup>
+
+</Project>
