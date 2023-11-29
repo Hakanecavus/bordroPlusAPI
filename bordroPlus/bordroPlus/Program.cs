@@ -14,16 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "bordroPlusAPI", Version = "v1" });
-    //c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    //{
-    //    Description = "JWT Authorization header using the Bearer scheme.",
-    //    Name = "Authorization",
-    //    In = ParameterLocation.Header,
-    //    Scheme = "Bearer",
-    //    Type = SecuritySchemeType.ApiKey,
-    //    BearerFormat = "JWT"
-    //});
-    //c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+    
 });
 
 builder.Services.DependecyInjectionCore();//TODO:Core Katmanýnýn injection iþlemlerini yapar
@@ -36,10 +27,7 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 
 });
 
-//builder.Services.AddDbContextPool<AppDBContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"), b => b.MigrationsAssembly("bordroPlus"));
-//});
+
 
 
 

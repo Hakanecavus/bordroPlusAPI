@@ -18,16 +18,6 @@ namespace bP.Data
         public static IServiceCollection DependencyInjectionData(this IServiceCollection services)
         {
             services.AddSingleton<IRecordSet, RecordSet>();
-            //string filePath = @"C:\Users\hakan\source\repos\bordroPlus\bordroPlus\appsettings.json";
-
-            //IConfigurationRoot configuration = new ConfigurationBuilder()
-            //    .SetBasePath(Path.GetDirectoryName(filePath))
-            //    .AddJsonFile("appsettings.json")
-            //    .Build();
-
-            //services.AddDbContext<AppDBContext>(options =>
-            //    options.UseSqlServer(configuration.GetConnectionString("ConnectionString")));
-            //services.AddDbContext<AppDBContext>(options => options.UseSqlServer(_configuration.DbConnectionString));
             return services;
         }
     }

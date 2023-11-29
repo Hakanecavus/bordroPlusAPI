@@ -16,8 +16,6 @@ namespace bordroPlus.Data
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            //var builder = new DbContextOptionsBuilder<AppDBContext>();
-            //var connectionString = configuration.GetConnectionString("ConnectionString");
             var builder = new DbContextOptionsBuilder<AppDBContext>();
             builder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly("bordroPlus"));
