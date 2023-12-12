@@ -18,14 +18,12 @@ namespace bP.Data.Repositories
         {
             _context = context;
         }
-        public Task<Payroll> Add(Payroll model)
+        public async Task<Payroll> Add(Payroll model)
         {
-            return Task.Run(async () =>
-            {
-                _context.Payrolls.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.Payrolls.FindAsync(model);
-            });
+            _context.Payrolls.Add(model);
+            _context.SaveChangesAsync();
+            return await _context.Payrolls.FindAsync(model);
+            
         }
 
         public Task Cancel(string Key)
@@ -38,54 +36,49 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var payroll = await _context.Payrolls.FindAsync(key);
+
+            if (payroll != null)
             {
-                var payroll = await _context.Payrolls.FindAsync(key);
                 _context.Payrolls.Remove(payroll);
-                return await _context.Payrolls.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
+            
         }
 
-        public Task<Payroll> Get(string Key)
+        public async Task<Payroll> Get(string Key)
         {
-            return Task.Run(async () =>
+            var payroll = await _context.Payrolls.FindAsync(Key);
+            if (payroll == null)
             {
-                var payroll = await _context.Payrolls.FindAsync(Key);
-                if (payroll == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return payroll;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return payroll;
+            }
+            
         }
 
-        public Task<Payroll> Get(Payroll model)
+        public async Task<Payroll> Get(Payroll model)
         {
-            return Task.Run(async () =>
+            var payroll = await _context.Payrolls.FindAsync(model);
+            if (payroll == null)
             {
-                var payroll = await _context.Payrolls.FindAsync(model);
-                if (payroll == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return payroll;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return payroll;
+            }
         }
 
-        public Task<List<Payroll>> Get()
+        public async Task<List<Payroll>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.Payrolls.ToListAsync();
-            });
+            return await _context.Payrolls.ToListAsync();
+            
         }
 
         public Task Update(Dictionary<string, object> parameters)

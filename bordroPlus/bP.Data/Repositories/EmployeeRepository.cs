@@ -2,6 +2,7 @@
 using bP.Data.Contract.Helpers;
 using bP.Data.DBContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -19,14 +20,11 @@ namespace bP.Data.Repositories
             _context = context;
         }
 
-        public Task<Employee> Add(Employee model)
+        public async Task<Employee> Add(Employee model)
         {
-            return Task.Run(async () =>
-            {
-                _context.Employees.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.Employees.FindAsync(model);
-            });
+            _context.Employees.Add(model);
+            await _context.SaveChangesAsync();
+            return await _context.Employees.FindAsync(model.Id);
         }
 
         public Task Cancel(string Key)
@@ -39,54 +37,50 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var employee = await _context.Employees.FindAsync(key);
+
+            if (employee != null)
             {
-                var employee = await _context.Employees.FindAsync(key);
                 _context.Employees.Remove(employee);
-                return await _context.Employees.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
+
         }
 
-        public Task<Employee> Get(string Key)
+        public async Task<Employee> Get(string Key)
         {
-            return Task.Run(async () =>
+            var employee = await _context.Employees.FindAsync(Key);
+
+            if (employee == null)
             {
-                var employee = await _context.Employees.FindAsync(Key);
-                if (employee == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return employee;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return employee;
+            }
         }
 
-        public Task<Employee> Get(Employee model)
+        public async Task<Employee> Get(Employee model)
         {
-            return Task.Run(async () =>
+            var employee = await _context.Employees.FindAsync(model);
+
+            if (employee == null)
             {
-                var employee = await _context.Employees.FindAsync(model);
-                if (employee == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return employee;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return employee;
+            }
         }
 
-        public Task<List<Employee>> Get()
+        public async Task<List<Employee>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.Employees.ToListAsync();
-            });
+            return await _context.Employees.ToListAsync();
+            
         }
 
         public Task Update(Dictionary<string, object> parameters)

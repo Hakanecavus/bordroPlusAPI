@@ -2,6 +2,7 @@
 using bP.Data.Contract.Helpers;
 using bP.Data.DBContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,14 +19,12 @@ namespace bP.Data.Repositories
             _context = dbContext;
         }
 
-        public Task<Role> Add(Role model)
+        public async Task<Role> Add(Role model)
         {
-            return Task.Run(async () =>
-            {
-                _context.Roles.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.Roles.FindAsync(model);
-            });
+            _context.Roles.Add(model);
+            _context.SaveChangesAsync();
+            return await _context.Roles.FindAsync(model);
+            
         }
 
         public Task Cancel(string Key)
@@ -38,54 +37,48 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var role = await _context.Roles.FindAsync(key);
+
+            if (role != null)
             {
-                var role = await _context.Roles.FindAsync(key);
                 _context.Roles.Remove(role);
-                return await _context.Roles.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
+            
         }
 
-        public Task<Role> Get(string Key)
+        public async Task<Role> Get(string Key)
         {
-            return Task.Run(async () =>
+            var role = await _context.Roles.FindAsync(Key);
+            if (role == null)
             {
-                var role = await _context.Roles.FindAsync(Key);
-                if (role == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return role;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return role;
+            }
         }
 
-        public Task<Role> Get(Role model)
+        public async Task<Role> Get(Role model)
         {
-            return Task.Run(async () =>
+            var role = await _context.Roles.FindAsync(model);
+            if (role == null)
             {
-                var role = await _context.Roles.FindAsync(model);
-                if (role == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return role;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return role;
+            }
         }
 
-        public Task<List<Role>> Get()
+        public async Task<List<Role>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.Roles.ToListAsync();
-            });
+            return await _context.Roles.ToListAsync();
+            
         }
 
         public Task Update(Dictionary<string, object> parameters)

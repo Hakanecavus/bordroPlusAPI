@@ -17,14 +17,12 @@ namespace bP.Data.Repositories
         public PermissionRepository(AppDBContext context) {
             _context = context;
         }
-        public Task<Permission> Add(Permission model)
+        public async Task<Permission> Add(Permission model)
         {
-            return Task.Run(async () =>
-            {
-                _context.Permissions.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.Permissions.FindAsync(model);
-            });
+            _context.Permissions.Add(model);
+            _context.SaveChangesAsync();
+            return await _context.Permissions.FindAsync(model);
+            
         }
 
         public Task Cancel(string Key)
@@ -37,54 +35,46 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var permission = await _context.Permissions.FindAsync(key);
+
+            if (permission != null)
             {
-                var permission = await _context.Permissions.FindAsync(key);
                 _context.Permissions.Remove(permission);
-                return await _context.Permissions.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public Task<Permission> Get(string Key)
+        public async Task<Permission> Get(string Key)
         {
-            return Task.Run(async () =>
+            var permission = await _context.Permissions.FindAsync(Key);
+            if (permission == null)
             {
-                var permission = await _context.Permissions.FindAsync(Key);
-                if (permission == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return permission;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return permission;
+            }
         }
 
-        public Task<Permission> Get(Permission model)
+        public async Task<Permission> Get(Permission model)
         {
-            return Task.Run(async () =>
+            var permission = await _context.Permissions.FindAsync(model);
+            if (permission == null)
             {
-                var permission = await _context.Permissions.FindAsync(model);
-                if (permission == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return permission;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return permission;
+            }
         }
 
-        public Task<List<Permission>> Get()
+        public async Task<List<Permission>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.Permissions.ToListAsync();
-            });
+            return await _context.Permissions.ToListAsync();
         }
         public Task Update(Dictionary<string, object> parameters)
         {

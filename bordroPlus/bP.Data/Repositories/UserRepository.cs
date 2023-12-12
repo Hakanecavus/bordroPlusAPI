@@ -19,15 +19,12 @@ namespace bP.Data.Repositories
             _context = context;
         }
 
-        public Task<User> Add(User model)
+        public async Task<User> Add(User model)
         {
-
-            return Task.Run(async () =>
-            {
-                _context.Users.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.Users.FindAsync(model);
-            });
+            _context.Users.Add(model);
+            _context.SaveChangesAsync();
+            return await _context.Users.FindAsync(model);
+            
         }
 
         public Task Cancel(string Key)
@@ -40,55 +37,50 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var user = await _context.Users.FindAsync(key);
+
+            if (user != null)
             {
-                var user = await _context.Users.FindAsync(key);
                 _context.Users.Remove(user);
-                return await _context.Users.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
+            
         }
 
-        public Task<User> Get(string Key)
+        public async Task<User> Get(string Key)
         {
-            return Task.Run(async () =>
+            var user = await _context.Users.FindAsync(Key);
+            if (user == null)
             {
-                var user = await _context.Users.FindAsync(Key);
-                if (user == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return user;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return user;
+            }
 
         }
 
-        public Task<User> Get(User model)
+        public async Task<User> Get(User model)
         {
-            return Task.Run(async () =>
+            var user = await _context.Users.FindAsync(model);
+            if (user == null)
             {
-                var user = await _context.Users.FindAsync(model);
-                if (user == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return user;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return user;
+            }
+            
         }
 
-        public Task<List<User>> Get()
+        public async Task<List<User>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.Users.ToListAsync();
-            });
+            return await _context.Users.ToListAsync();
+
         }
 
         public Task Update(Dictionary<string, object> parameters)

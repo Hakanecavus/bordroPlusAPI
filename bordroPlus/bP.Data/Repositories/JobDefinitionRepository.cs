@@ -18,14 +18,12 @@ namespace bP.Data.Repositories
         {
             _context = context;
         }
-        public Task<JobDefinition> Add(JobDefinition model)
+        public async Task<JobDefinition> Add(JobDefinition model)
         {
-            return Task.Run(async () =>
-            {
-                _context.JobDefinitions.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.JobDefinitions.FindAsync(model);
-            });
+            _context.JobDefinitions.Add(model);
+            await _context.SaveChangesAsync();
+            return await _context.JobDefinitions.FindAsync(model.Id);
+            
         }
 
         public Task Cancel(string Key)
@@ -38,54 +36,50 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var jobDefinition = await _context.JobDefinitions.FindAsync(key);
+
+            if (jobDefinition != null)
             {
-                var jobDefinition = await _context.JobDefinitions.FindAsync(key);
                 _context.JobDefinitions.Remove(jobDefinition);
-                return await _context.JobDefinitions.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public Task<JobDefinition> Get(string Key)
+        public async Task<JobDefinition> Get(string Key)
         {
-            return Task.Run(async () =>
+            var jobDefinition = await _context.JobDefinitions.FindAsync(Key);
+
+            if (jobDefinition == null)
             {
-                var jobDefinition = await _context.JobDefinitions.FindAsync(Key);
-                if (jobDefinition == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return jobDefinition;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return jobDefinition;
+            }
+            
         }
 
-        public Task<JobDefinition> Get(JobDefinition model)
+        public async Task<JobDefinition> Get(JobDefinition model)
         {
-            return Task.Run(async () =>
+            var jobDefinition = await _context.JobDefinitions.FindAsync(model);
+
+            if (jobDefinition == null)
             {
-                var jobDefinition = await _context.JobDefinitions.FindAsync(model);
-                if (jobDefinition == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return jobDefinition;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return jobDefinition;
+            }
         }
 
-        public Task<List<JobDefinition>> Get()
+        public async Task<List<JobDefinition>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.JobDefinitions.ToListAsync();
-            });
+            return await _context.JobDefinitions.ToListAsync();
+            
         }
 
         public Task Update(Dictionary<string, object> parameters)

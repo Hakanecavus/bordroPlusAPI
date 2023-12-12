@@ -18,14 +18,12 @@ namespace bP.Data.Repositories
         {
             _context = context;
         }
-        public Task<Company> Add(Company model)
+        public async Task<Company> Add(Company model)
         {
-            return Task.Run(async () =>
-            {
-                _context.Companies.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.Companies.FindAsync(model);
-            });
+            _context.Companies.Add(model);
+            await _context.SaveChangesAsync();
+            return await _context.Companies.FindAsync(model.Id);
+            
         }
 
         public Task Cancel(string Key)
@@ -38,54 +36,51 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var company = await _context.Companies.FindAsync(key);
+
+            if (company != null)
             {
-                var company = await _context.Companies.FindAsync(key);
                 _context.Companies.Remove(company);
-                return await _context.Companies.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
+            
         }
 
-        public Task<Company> Get(string Key)
+        public async Task<Company> Get(string Key)
         {
-            return Task.Run(async () =>
+            var company = await _context.Companies.FindAsync(Key);
+
+            if (company == null)
             {
-                var company = await _context.Companies.FindAsync(Key);
-                if (company == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return company;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return company;
+            }
+            
         }
 
-        public Task<Company> Get(Company model)
+        public async Task<Company> Get(Company model)
         {
-            return Task.Run(async () =>
+            var company = await _context.Companies.FindAsync(model);
+
+            if (company == null)
             {
-                var company = await _context.Companies.FindAsync(model);
-                if (company == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return company;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return company;
+            }
         }
 
-        public Task<List<Company>> Get()
+        public async Task<List<Company>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.Companies.ToListAsync();
-            });
+            return await _context.Companies.ToListAsync();
+            
         }
 
         public Task Update(Dictionary<string, object> parameters)

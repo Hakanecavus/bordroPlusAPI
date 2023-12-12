@@ -18,14 +18,11 @@ namespace bP.Data.Repositories
         {
             _context = context;
         }
-        public Task<UploadFile> Add(UploadFile model)
+        public async Task<UploadFile> Add(UploadFile model)
         {
-            return Task.Run(async () =>
-            {
-                _context.UploadFiles.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.UploadFiles.FindAsync(model);
-            });
+            _context.UploadFiles.Add(model);
+            _context.SaveChangesAsync();
+            return await _context.UploadFiles.FindAsync(model);
         }
 
         public Task Cancel(string Key)
@@ -38,54 +35,48 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var file = await _context.UploadFiles.FindAsync(key);
+
+            if (file != null)
             {
-                var file = await _context.UploadFiles.FindAsync(key);
                 _context.UploadFiles.Remove(file);
-                return await _context.UploadFiles.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
+            
         }
 
-        public Task<UploadFile> Get(string Key)
+        public async Task<UploadFile> Get(string Key)
         {
-            return Task.Run(async () =>
+            var file = await _context.UploadFiles.FindAsync(Key);
+            if (file == null)
             {
-                var file = await _context.UploadFiles.FindAsync(Key);
-                if (file == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return file;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return file;
+            }
         }
 
-        public Task<UploadFile> Get(UploadFile model)
+        public async Task<UploadFile> Get(UploadFile model)
         {
-            return Task.Run(async () =>
+            var file = await _context.UploadFiles.FindAsync(model);
+            if (file == null)
             {
-                var file = await _context.UploadFiles.FindAsync(model);
-                if (file == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return file;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return file;
+            }
         }
 
-        public Task<List<UploadFile>> Get()
+        public async Task<List<UploadFile>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.UploadFiles.ToListAsync();
-            });
+            return await _context.UploadFiles.ToListAsync();
+
         }
 
         public Task Update(Dictionary<string, object> parameters)

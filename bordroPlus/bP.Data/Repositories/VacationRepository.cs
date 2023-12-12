@@ -18,14 +18,12 @@ namespace bP.Data.Repositories
         {
             _context = context;
         }
-        public Task<Vacation> Add(Vacation model)
+        public async Task<Vacation> Add(Vacation model)
         {
-            return Task.Run(async () =>
-            {
-                _context.Vacations.Add(model);
-                _context.SaveChangesAsync();
-                return await _context.Vacations.FindAsync(model);
-            });
+            _context.Vacations.Add(model);
+            _context.SaveChangesAsync();
+            return await _context.Vacations.FindAsync(model);
+            
         }
 
         public Task Cancel(string Key)
@@ -38,54 +36,49 @@ namespace bP.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Delete(string key)
+        public async Task Delete(string key)
         {
-            return Task.Run(async () =>
+            var vacation = await _context.Vacations.FindAsync(key);
+
+            if (vacation != null)
             {
-                var vacation = await _context.Vacations.FindAsync(key);
                 _context.Vacations.Remove(vacation);
-                return await _context.Vacations.ToListAsync();
-            });
+                await _context.SaveChangesAsync();
+            }
+            
         }
 
-        public Task<Vacation> Get(string Key)
+        public async Task<Vacation> Get(string Key)
         {
-            return Task.Run(async () =>
+            var vacation = await _context.Vacations.FindAsync(Key);
+            if (vacation == null)
             {
-                var vacation = await _context.Vacations.FindAsync(Key);
-                if (vacation == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return vacation;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return vacation;
+            }
         }
 
-        public Task<Vacation> Get(Vacation model)
+        public async Task<Vacation> Get(Vacation model)
         {
-            return Task.Run(async () =>
+            var vacation = await _context.Vacations.FindAsync(model);
+            if (vacation == null)
             {
-                var vacation = await _context.Vacations.FindAsync(model);
-                if (vacation == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return vacation;
-                }
-            });
+                return null;
+            }
+            else
+            {
+                return vacation;
+            }
+            
         }
 
-        public Task<List<Vacation>> Get()
+        public async Task<List<Vacation>> Get()
         {
-            return Task.Run(async () =>
-            {
-                return await _context.Vacations.ToListAsync();
-            });
+            return await _context.Vacations.ToListAsync();
+
         }
 
         public Task Update(Dictionary<string, object> parameters)
